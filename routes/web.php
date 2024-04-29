@@ -12,13 +12,24 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+$router->post('/acceso', 'AuthController@login');
+$router->post('/guardar', 'UsuarioControlador@guardar');
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+//----------------USUARIO------------
+$router->post('/recuperarContra', 'UsuarioControlador@recuperarContra');
+$router->get('/leerCorreo', 'ProgramadoControlador@leerCorreo');
+$router->get('/prueba', 'CuadroControlador@prueba');
 
-$router->get('/ruta', 'PruebaControlador@index');
-$router->get('/ruta/{id}', 'PruebaControlador@buscarId');
-$router->post('/ruta','PruebaControlador@guardar');
-$router->delete('/ruta/{id}','PruebaControlador@eliminar');
-$router->put('/ruta/{id}','PruebaControlador@actualizar');
+$router->group(
+    ['middleware'=>'jwt.auth'],
+    function () use ($router) {
+        // USUARIO
+        $router->get('/buscarById', 'UsuarioControlador@buscarById');
+        $router->post('/actualizar', 'UsuarioControlador@actualizar');
+
+        // CUADRO
+        // $router->get('/data', 'CuadroControlador@buscarById');
+        $router->get('/data', 'CuadroControlador@listar');
+    }
+);
+
