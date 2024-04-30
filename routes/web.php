@@ -20,6 +20,8 @@ $router->post('/recuperarContra', 'UsuarioControlador@recuperarContra');
 $router->get('/leerCorreo', 'ProgramadoControlador@leerCorreo');
 $router->get('/prueba', 'ProgramadoControlador@enviarCorreo');
 
+$router->get('/vista', 'UsuarioControlador@vista_login');
+
 $router->group(
     ['middleware'=>'jwt.auth'],
     function () use ($router) {

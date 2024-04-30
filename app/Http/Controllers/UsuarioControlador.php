@@ -110,5 +110,9 @@ class UsuarioControlador extends Controller{
             , 400);        
         }        
     }
+
+    public function vista_login(){        
+        return view('recuperar-pass');
+    }
     
 }
