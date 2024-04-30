@@ -54,7 +54,8 @@ class CuadroControlador extends Controller{
     public function prueba() {
         $MailController = new MailController();
         $data = $MailController->enviarCorreo('cdelacallecoz','121312');
-        if($data['error']){
+
+        if($data){
             return response()->json([
                 'error' => 'Error'
             ],

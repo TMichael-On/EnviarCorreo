@@ -18,7 +18,7 @@ $router->post('/guardar', 'UsuarioControlador@guardar');
 //----------------USUARIO------------
 $router->post('/recuperarContra', 'UsuarioControlador@recuperarContra');
 $router->get('/leerCorreo', 'ProgramadoControlador@leerCorreo');
-$router->get('/prueba', 'CuadroControlador@prueba');
+$router->get('/prueba', 'ProgramadoControlador@enviarCorreo');
 
 $router->group(
     ['middleware'=>'jwt.auth'],

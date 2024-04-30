@@ -6,6 +6,7 @@ use App\Models\Caso;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\CasoControlador;
 use App\Http\Controllers\MailController;
+use Carbon\Carbon;
 use DateTime;
 class ProgramadoControlador extends Controller{
     
@@ -185,69 +186,56 @@ class ProgramadoControlador extends Controller{
     }
 
     public function enviarCorreo(){
-        date_default_timezone_set('America/Lima');
-        $fechaActual = Carbon::now('America/Lima')->format('Y-m-d');
-        $results = DB::select('CALL VerCorreoProgramado(?)', [$fechaActual]);
-
-        foreach ($results as $row) {
-            if ($row['estado'] == 0) {
-                $postData = [
-                    'apellidos' => $row['apellidos'],
-                    'nombres' => $row['nombres'],
-                    'correo' => $row['correo'],
-                    'dest_correo' => $row['dest_correo'],
-                    'expediente' => $row['expediente'],
-                    'proceso' => $row['proceso'],
-                    'tarea' => $row['tarea'],
-                    'asignado' => $row['asignado'],
-                    'limite' => $row['limite'],
-                    'ucID' => $row['IDUC'],
-                    'documento' => $row['documento']
-                ];
-        
-                $ch = curl_init('http://localhost/proyecto/php/formato-correo.php');
-                $MailController = new MailController();
-                $response = $MailController->formatoCorreo();
-
-                if($response == 'error'){
-                    return response()->json([
-                        'error' => 'Error'
-                    ],
-                     500);
-                }
-                switch ($response) {
-                    case "dont_existing_email":
-                        echo "Correo no existente.\n";
-                        break;
-                    case "success":
-                        echo "Correo enviado.\n";
-                        $formData = [
+        try{
+            date_default_timezone_set('America/Lima');
+            $fechaActual = Carbon::now('America/Lima')->format('Y-m-d');
+            $results = DB::select('CALL VerCorreoProgramado(?)', [$fechaActual]);
+            // return $results;
+            if (!empty($results)) {
+                // Convertir stdClass a array
+                $results = json_decode(json_encode($results), true);
+                foreach ($results as $row) {
+                    if ($row['estado'] == 0) {
+                        $Data = [
+                            'apellidos' => $row['apellidos'],
+                            'nombres' => $row['nombres'],
+                            'email' => $row['correo'],
+                            'dest_email' => $row['dest_correo'],
+                            'expediente' => $row['expediente'],
+                            'proceso' => $row['proceso'],                        
+                            'asignado' => $row['asignado'],
+                            'limite' => $row['limite'],
                             'ucID' => $row['IDUC'],
-                            'date' => $Date
+                            'documento' => $row['documento']
                         ];
-                        $ch1 = curl_init('http://localhost/proyecto/php/actualizar-estado.php');
-                        curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch1, CURLOPT_POSTFIELDS, http_build_query($formData));
-                        curl_setopt($ch1, CURLOPT_POST, true);
-                        $response1 = curl_exec($ch1);
-                        if (trim($response1) === "success") {
-                            echo "Estado actualizado.";
-                        } else {
-                            echo "Problemas con el estado: " . $response1;
-                        }
-                        curl_close($ch1);
-                        break;
         
-                    case "fail":
-                        echo "Problema: correo no enviado.\n";
-                        break;
-                    default:
-                        echo "Ocurrió un error al enviar el correo. Por favor, inténtalo de nuevo.\n" . $response;
-                        break;
-                }                
+                        $MailController = new MailController();
+                        $response = 0; // $MailController->actualizarEstado($Data)
+                        // return $response;
+                        if($response){
+                            $formData = [
+                                'ucID' => $row['IDUC'],
+                                'date' => $fechaActual
+                            ];
+                            $CasoControlador = new CasoControlador();
+                            $result = $CasoControlador->actualizarEstado($formData);
+                            
+                            if(!$result){
+                                error_log($result, 3, base_path()."/enviarCorreo.log");
+                                return 'Error en actualizarEstado';
+                            }
+                            return 'Correcto';
+                        }
+                        error_log($response, 3, base_path()."/enviarCorreo.log");
+                        return 'Error en enviarCorreo';
+                    }
+                }
             }
-        }
-        echo "Termino de enviar todos los correos correspondientes a: ".$Date;
+        } catch (\Exception $e) {
+            error_log('Error exception en enviarCorreo', 3, base_path()."/enviarCorreo.log");
+            return response()->json([
+                'error' => 'Algo salio mal'
+                ], 400);
+        } 
     }
-
 }
