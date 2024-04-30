@@ -45,15 +45,16 @@ class UsuarioControlador extends Controller{
     public function actualizar(Request $request) {
         try{
             $id = $this->validar($request);
-            $usuario = Usuario::find($id);
+            $usuario = Usuario::find(1);
 
             if($usuario){
                 if($request->input('contra')){
                     $usuario->contra = md5($request->input('contra'));
                 }
                 $usuario->save();
+                return response()->json($mensaje = 'Registro actualizado');
             }
-            return response()->json($mensaje = 'Registro actualizado');
+            return response()->json($mensaje = 'Usuario no encontrado');
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Hubo un error al procesar la petición', 

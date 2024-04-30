@@ -24,8 +24,8 @@ $router->group(
     ['middleware'=>'jwt.auth'],
     function () use ($router) {
         // USUARIO
-        $router->get('/buscarById', 'UsuarioControlador@buscarById');
         $router->post('/actualizar', 'UsuarioControlador@actualizar');
+        $router->get('/buscarById', 'UsuarioControlador@buscarById');
 
         // CUADRO
         // $router->get('/data', 'CuadroControlador@buscarById');
