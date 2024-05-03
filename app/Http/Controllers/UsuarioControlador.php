@@ -112,7 +112,22 @@ class UsuarioControlador extends Controller{
     }
 
     public function vista_login(){        
-        return view('recuperar-pass');
+        return view('login');
     }
     
+    public function vista_recuperar_pass(){
+        return view('recuperar_pass');
+    }
+    
+    public function vista_register(){
+        return view('register');
+    }
+    
+    public function vista_home(){
+        return view('home');
+    }
+    
+    public function vista_cambiar_pass(){
+        return view('cambiar_pass');
+    }
 }

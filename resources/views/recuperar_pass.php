@@ -21,13 +21,27 @@
       .error-message {
         text-align: center;
       }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .content {
+        flex: 1;
+        }
+      footer {
+        background-color: #343a40;
+        color: #ffffff;
+        padding: 20px 0;
+      }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div class="content container">
       <div class="login-container">
         <div class="login-logo">
-          <img src="ruta/a/tu/logo.png" alt="Logo" />
+          <img src="public\svg\logo-1.svg" alt="Logo" />
         </div>
         <h2 class="text-center mb-4">Recuperar contraseña</h2>
         <form id="loginForm">
@@ -52,6 +66,14 @@
         <div id="message" class="mt-3"></div>
       </div>
     </div>
+  <footer class="footer text-center">
+    <div class="container">
+      Propiedad intelectual PT-Digital &copy; <?php echo date("Y"); ?>
+       | Contacto 
+       | +51 917 806 858
+       | cdelacallecoz@gmail.com
+    </div>
+  </footer>
 
     <!-- Bootstrap Bundle JS (Popper incluido) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
