@@ -38,7 +38,8 @@ class AuthController extends Controller{
                 'error' => 'El correo no existe'
             ], 400);            
         }
-        $hashMD5_clave = md5($this->request->input('contra'));
+        // $hashMD5_clave = md5($this->request->input('contra'));
+        $hashMD5_clave = ($this->request->input('contra'));
         if ($hashMD5_clave == $usuario->contra){
             return response()->json([
                 'token' => $this->jwt($usuario)

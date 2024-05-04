@@ -49,6 +49,12 @@
         color: #ffffff;
         padding: 20px 0;
       }
+      .table-container {
+        width: 100%;
+        max-width: max-content; 
+        height: 300px; 
+        overflow-y: auto;
+      }
     </style>
   </head>
   <body>
@@ -58,7 +64,7 @@
       <div class="user-header">
         <div class="row align-items-center">
           <div class="col-auto">
-          <img src="public\svg\logo-1.svg" alt="Logo" class="logo"/>
+          <img src="public\image\logo-1.png" alt="Logo" class="logo"/>
           </div>
           <div class="col">
             <h1 class="home-title">Home</h1>
@@ -66,10 +72,10 @@
           <div class="col-auto">
             <div class="row">
               <div class="col-12">
-                <span class="">Apellidos, nombres</span>
+                <span class="user-name">Apellidos, Nombres</span>
               </div>
               <div class="col-12">
-                <span class="">Correo</span>
+                <span class="user-mail">Correo</span>
               </div>
             </div>
           </div>
@@ -97,22 +103,23 @@
         </div>
         <div class="row">
           <div class="col">
-            <table class="table" id="dateExp">
-              <thead>
-                <tr>
-                  <th scope="col">N°</th>
-                  <th scope="col">Correo</th>
-                  <th scope="col">Expediente</th>
-                  <th scope="col">Proceso</th>
-                  <th scope="col">Tarea</th>
-                  <th scope="col">F. Asignado</th>
-                  <th scope="col">F. Limite</th>
-                  <th scope="col">F. Enviado</th>
-                  <th scope="col">Estado</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
+            <div class="table-container">
+              <table class="table" id="dateExp">
+                <thead>
+                  <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col">Expediente</th>
+                    <th scope="col">Proceso</th>
+                    <th scope="col">F. Asignado</th>
+                    <th scope="col">F. Limite</th>
+                    <th scope="col">F. Enviado</th>
+                    <th scope="col">Estado</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
             </table>
+          </div>
           </div>
         </div>
       </div>
@@ -129,7 +136,6 @@
                   <th scope="col">Correo</th>
                   <th scope="col">Expediente</th>
                   <th scope="col">Proceso</th>
-                  <th scope="col">Tarea</th>
                   <th scope="col">F. Asignado</th>
                   <th scope="col">F. Limite</th>
                   <th scope="col">F. Enviado</th>
@@ -171,11 +177,51 @@
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const user = 1;
-        const url =
-          "http://localhost/proyecto/php/cuadro-diario.php?id=" + user;
+      const token = localStorage.getItem("token");
+      const headers = {
+        "Authorization": "Bearer " + token
+      };
 
-        fetch(url)
+      // Realizamos la solicitud fetch con el encabezado de autorización
+      fetch("/buscarById", {
+        headers: headers
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          const userSpan = document.querySelector(".user-name");
+          if (userSpan) {
+            userSpan.textContent = `${data.apellidos}, ${data.nombres}`;
+          } else {
+            console.error("El elemento con la clase 'user-name' no se encontró en el DOM");
+          }
+          const userMail = document.querySelector(".user-mail");
+          if (userMail) {
+            userMail.textContent = `${data.correo}`;
+          } else {
+            console.error("El elemento con la clase 'user-mail' no se encontró en el DOM");
+          }
+        } else {
+          console.error("No se pudieron obtener los datos del usuario");
+        }
+      })
+      .catch((error) => {
+        console.error("Error al realizar la solicitud:", error);
+      });
+    });
+
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+      const token = localStorage.getItem("token");
+      const headers = {
+      "Authorization": "Bearer " + token
+      };
+
+      // Realizamos la solicitud fetch con el encabezado de autorización
+      fetch("/data-date", {
+        headers: headers
+      })
           .then((response) => response.json())
           .then((data) => {
             const userData = document.getElementById("dateExp");
@@ -195,7 +241,6 @@
                 <td>${row.dest_correo}</td>
                 <td>${row.expediente}</td>
                 <td>${row.proceso}</td>
-                <td>${row.tarea}</td>
                 <td>${row.asignado}</td>
                 <td>${row.limite}</td>
                 <td>${row.enviado === "0000-00-00" ? "-" : row.enviado}</td>
@@ -211,14 +256,15 @@
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const userSpan = document.getElementById("userSpan");
-        if (userSpan) {
-          userSpan.textContent = "Apellido, Nombre";
-        }
-        const user = 1;
-        const url =
-          "http://localhost/proyecto/php/cuadro-general.php?id=" + user;
-        fetch(url)
+        const token = localStorage.getItem("token");
+        const headers = {
+        "Authorization": "Bearer " + token
+        };
+
+        // Realizamos la solicitud fetch con el encabezado de autorización
+        fetch("/data", {
+          headers: headers
+        })
           .then((response) => response.json())
           .then((data) => {
             const userData = document.getElementById("userData");
@@ -238,7 +284,6 @@
                 <td>${row.dest_correo}</td>
                 <td>${row.expediente}</td>
                 <td>${row.proceso}</td>
-                <td>${row.tarea}</td>
                 <td>${row.asignado}</td>
                 <td>${row.limite}</td>
                 <td>${row.enviado === "0000-00-00" ? "-" : row.enviado}</td>

@@ -102,34 +102,51 @@
           event.preventDefault();
           const correo = document.getElementById("inputEmail").value;
           const contra = document.getElementById("inputPassword").value;
-
-          // Realizar la solicitud AJAX para obtener el JSON
-          fetch(
-            `http://localhost/proyecto/php/login.php?correo=${correo}&contra=${contra}`
-          )
+          const ruta = "/acceso"; // Ruta del servidor
+          const datos = {
+            correo: correo,
+            contra: contra
+          };
+          const opciones = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+          };
+          fetch(ruta, opciones)          
             .then((response) => response.json())
             .then((data) => {
               const messageElement = document.getElementById("message");
-              if (data.length > 0) {
-                const usuario = data[0];
-                const mensaje = `Bienvenido ${usuario.Apellidos}, ${usuario.Nombres}`;
+              if (data.token) {              
+                const mensaje = "Inicio de sesión exitoso";
                 messageElement.innerText = mensaje;
                 messageElement.classList.remove("error-message");
                 messageElement.classList.add("success-message");
-                if (userSpan) {
-                  userSpan.textContent = `${usuario.Apellidos}, ${usuario.Nombres}`;
-                  console.log("Contenido de userSpan:", userSpan.textContent);
-                }
-                console.log(userSpan);
-                setTimeout(function () {
-                  window.location.href = "/proyecto/html/home.html";
-                }, 1500);
+                const token = data.token;
+                fetch("/home", {
+                  method: "GET",
+                  headers: {
+                    "Authorization": "Bearer " + token
+                  }
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error("Error al cargar la página de inicio");
+                  }
+    localStorage.setItem("token", data.token);
+                  setTimeout(function () {
+                    window.location.href = "/home";
+                  }, 1500);
+                })
+                .catch(error => {
+                  console.error("Error:", error);
+                });
               } else {
-                messageElement.innerText = "Credenciales incorrectas";
+                messageElement.innerText = data.error;
                 messageElement.classList.add("error-message");
               }
             })
-
             .catch((error) => console.error("Error:", error));
         });
     </script>
