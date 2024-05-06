@@ -23,7 +23,8 @@ $router->get('/prueba', 'ProgramadoControlador@enviarCorreo');
 $router->get('/recuperar-pass', 'UsuarioControlador@vista_recuperar_pass');
 $router->get('/login', 'UsuarioControlador@vista_login');
 $router->get('/register', 'UsuarioControlador@vista_register');
-        $router->get('/home', 'UsuarioControlador@vista_home');
+$router->get('/home', 'UsuarioControlador@vista_home');
+$router->get('/cambiar-pass', 'UsuarioControlador@vista_cambiar_pass');
 
 $router->group(
     ['middleware'=>'jwt.auth'],
@@ -31,7 +32,6 @@ $router->group(
         // USUARIO
         $router->post('/actualizar', 'UsuarioControlador@actualizar');
         $router->get('/buscarById', 'UsuarioControlador@buscarById');
-        $router->get('/cambiar-pass', 'UsuarioControlador@vista_cambiar_pass');
 
         // CUADRO
         $router->get('/data-date', 'CuadroControlador@buscarById');

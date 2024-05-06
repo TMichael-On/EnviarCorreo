@@ -49,7 +49,8 @@ class UsuarioControlador extends Controller{
 
             if($usuario){
                 if($request->input('contra')){
-                    $usuario->contra = md5($request->input('contra'));
+                    $usuario->contra = ($request->input('contra'));
+                    // $usuario->contra = md5($request->input('contra'));
                 }
                 $usuario->save();
                 return response()->json($mensaje = 'Registro actualizado');

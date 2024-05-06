@@ -50,9 +50,11 @@
         padding: 20px 0;
       }
       .table-container {
-        width: 100%;
-        max-width: max-content; 
-        height: 300px; 
+        height: 150px; 
+        overflow-y: auto;
+      }
+      .table-container1 {
+        height: 450px; 
         overflow-y: auto;
       }
     </style>
@@ -82,10 +84,10 @@
           <div class="col-auto">
             <div class="row">
               <div class="col-12">
-                <button class="btn changepass-btn">Cambio contraseña</button>
+                <button class="btn changepass-btn" onclick="cambioContraseña()">Cambio contraseña</button>
               </div>
               <div class="col-12">
-                <button class="btn logout-btn">Logout</button>
+                <button class="btn logout-btn" onclick="exit()">Logout</button>
               </div>
             </div>
           </div>
@@ -129,6 +131,7 @@
       <div class="user-body">
         <div class="row">
           <div class="col">
+            <div class="table-container1">
             <table class="table" id="userData">
               <thead>
                 <tr>
@@ -144,6 +147,7 @@
               </thead>
               <tbody></tbody>
             </table>
+          </div>
           </div>
         </div>
       </div>
@@ -218,7 +222,6 @@
       "Authorization": "Bearer " + token
       };
 
-      // Realizamos la solicitud fetch con el encabezado de autorización
       fetch("/data-date", {
         headers: headers
       })
@@ -261,7 +264,6 @@
         "Authorization": "Bearer " + token
         };
 
-        // Realizamos la solicitud fetch con el encabezado de autorización
         fetch("/data", {
           headers: headers
         })
@@ -299,8 +301,18 @@
     </script>
     <script>
       function refrescarPagina() {
-        // Esta función refresca la página
         window.location.reload();
+      }
+    </script>
+    <script>
+      function cambioContraseña() {
+        window.location.href = "/cambiar-pass";
+      }
+    </script>
+    <script>
+      function exit() {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
       }
     </script>
   </body>

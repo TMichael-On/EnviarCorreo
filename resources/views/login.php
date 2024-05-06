@@ -134,7 +134,7 @@
                   if (!response.ok) {
                     throw new Error("Error al cargar la página de inicio");
                   }
-    localStorage.setItem("token", data.token);
+                  localStorage.setItem("token", data.token);    
                   setTimeout(function () {
                     window.location.href = "/home";
                   }, 1500);

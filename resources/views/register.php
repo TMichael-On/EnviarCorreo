@@ -132,7 +132,7 @@
               >
                 <img
                   src="public\svg\eye-2.svg"
-                  alt="Mostrar contraseña"
+                  alt="Ocultar contraseña"
                   id="eye-icon-2"
                 />
               </button>
@@ -216,10 +216,10 @@
         btnViewPass1.addEventListener("click", function () {
           if (inputPass1.type === "password") {
             inputPass1.type = "text";
-            eyeIcon1.src = "../svg/eye-2.svg";
+            eyeIcon1.src = "public/svg/eye-2.svg";
           } else {
             inputPass1.type = "password";
-            eyeIcon1.src = "../svg/eye-1.svg";
+            eyeIcon1.src="public/svg/eye-1.svg";
           }
         });
 
@@ -230,10 +230,10 @@
         btnViewPass2.addEventListener("click", function () {
           if (inputPass2.type === "password") {
             inputPass2.type = "text";
-            eyeIcon2.src = "../svg/eye-2.svg";
+            eyeIcon2.src = "public/svg/eye-2.svg";
           } else {
             inputPass2.type = "password";
-            eyeIcon2.src = "../svg/eye-1.svg";
+            eyeIcon2.src = "public/svg/eye-1.svg";
           }
         });
       });
