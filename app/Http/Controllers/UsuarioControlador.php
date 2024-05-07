@@ -53,13 +53,14 @@ class UsuarioControlador extends Controller{
                     // $usuario->contra = md5($request->input('contra'));
                 }
                 $usuario->save();
-                return response()->json($mensaje = 'Registro actualizado');
+                return response()->json([
+                    'message' => 'Registro actualizado'
+                ]);
             }
             return response()->json($mensaje = 'Usuario no encontrado');
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Hubo un error al procesar la petición', 
-                'error' => $e->getMessage()
+                'error' => 'Hubo un error al procesar la petición'
             ], 500);
         }
     }

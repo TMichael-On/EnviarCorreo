@@ -213,12 +213,14 @@
         return;
       }
       const token = localStorage.getItem("token");
-      const headers = {
-        "Authorization": "Bearer " + token
-      };
+      var headers = {'Content-Type': 'application/json'};
+      if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+      }
       const ruta = "/actualizar";
+      debugger
       const datos = {
-        contra: pass1
+        "contra": pass1
       };
       const opciones = {
         method: 'POST',
@@ -226,17 +228,21 @@
         body: JSON.stringify(datos)
       };
       fetch(ruta, opciones)
-        .then((data) => {
-          if (data.message === "success") {
-            alert("Cambio de contraseña exitoso.");
-            setTimeout(function () {
-              window.location.href = "/login";
-            }, 1500);
-          } else {
-            alert("Error: " + data.mensaje);
-          }
+        .then((data) => {          
+          data.json().then(response => {	
+            debugger            
+            if (response.message) {
+              alert("Cambio de contraseña exitoso.");
+              setTimeout(function () {
+                window.location.href = "/login";
+              }, 1500);
+            } else {
+              alert("Error: " + response.error);
+            }
+          })
         })
         .catch((error) => {
+          debugger
           alert("Error al enviar la solicitud: ", error.message);
         });
     });
