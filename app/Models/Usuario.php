@@ -12,14 +12,12 @@ class Usuario extends Model{
         'apellidos' ,
         'correo' ,
         'contra' ,
-        'telefono' ,
         'urlGmail' ,
-        'codWhatsapp' ,
+        
     ];
 
     protected $hidden = [
         'contra',
-        'codWhatsapp',
     ];
     
     public $timestamps = false;

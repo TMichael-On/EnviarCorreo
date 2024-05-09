@@ -37,26 +37,26 @@
       }
 
       body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-      .content {
-        flex: 1;
-        }
-      footer {
-        background-color: #343a40;
-        color: #ffffff;
-        padding: 20px 0;
-      }
-      .table-container {
-        height: 150px; 
-        overflow-y: auto;
-      }
-      .table-container1 {
-        height: 450px; 
-        overflow-y: auto;
-      }
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .content {
+      flex: 1;
+    }
+    footer {
+      background-color: #343a40;
+      color: #ffffff;
+      padding: 20px 0;
+    }
+    .table-container {
+      height: 150px; 
+      overflow-y: auto;
+    }
+    .table-container1 {
+      height: 450px; 
+      overflow-y: auto;
+    }
     </style>
   </head>
   <body>
@@ -155,10 +155,12 @@
 
   <footer class="footer text-center">
     <div class="container">
-      Propiedad intelectual PT-Digital &copy; <?php echo date("Y"); ?>
-       | Contacto 
-       | +51 917 806 858
-       | cdelacallecoz@gmail.com
+      
+    Propiedad intelectual DYNAMICDEVGROUP  &copy; <?php echo date("Y"); ?>
+     | Contacto 
+     | +51 917 806 858
+     | cdelacallecoz@gmail.com
+     | https://dynamicdevgroup.site/
     </div>
   </footer>
     <!-- Bootstrap Bundle JS (Popper incluido) -->
@@ -213,7 +215,6 @@
         console.error("Error al realizar la solicitud:", error);
       });
     });
-
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {

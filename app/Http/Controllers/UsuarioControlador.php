@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -8,49 +9,72 @@ use Firebase\JWT\Key;
 use Firebase\JWT\ExpiredException;
 use App\Http\Controllers\MailController;
 
-class UsuarioControlador extends Controller{
+class UsuarioControlador extends Controller
+{
 
-    public function buscarById(Request $request){
-        try{
+    public function buscarById(Request $request)
+    {
+        try {
             $id = $this->validar($request);
             $usuario = new Usuario;
-            $data= $usuario->find($id);
+            $data = $usuario->find($id);
 
             return response()->json($data);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Hubo un error al procesar la petición', 
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }  
-
-    public function guardar(Request $request){
-        try{        
-            $usuario = new Usuario;
-            $data = $request->all();
-            $data['contra'] = md5($data['contra']);
-            $usuario->fill($data);
-            $usuario->save();
-
-            return response()->json($usuario);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Hubo un error al procesar la petición', 
+                'message' => 'Hubo un error al procesar la petición',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function actualizar(Request $request) {
-        try{
-            $id = $this->validar($request);
-            $usuario = Usuario::find(1);
+    public function guardar(Request $request)
+    {
+        try {
+            // Validar la solicitud utilizando las reglas de validación de Laravel
+            $request->validate([
+                'correo' => 'required|email|unique:usuarios,correo',
+                'nombres' => 'required',
+                'apellidos' => 'required',
+                'contra' => 'required|min:6|max:20',
+                'urlGmail' => 'required|url',
+            ]);
 
-            if($usuario){
-                if($request->input('contra')){
-                    $usuario->contra = ($request->input('contra'));
-                    // $usuario->contra = md5($request->input('contra'));
+            // Obtener los datos de la solicitud
+            $data = $request->all();
+
+            // Crear un nuevo usuario
+            $usuario = new Usuario;
+            $usuario->fill([
+                'correo' => $data['correo'],
+                'nombres' => $data['nombres'],
+                'apellidos' => $data['apellidos'],
+                'contra' => md5($data['contra']), // No se recomienda utilizar md5 para almacenar contraseñas
+                'url_gmail' => $data['urlGmail'], // Asegúrate de que el nombre del campo sea correcto
+            ]);
+            $usuario->save();
+
+            // Retornar una respuesta de éxito
+            return "success";
+        } catch (\Exception $e) {
+            // Capturar y manejar cualquier excepción
+            return response()->json([
+                'message' => 'Hubo un error al procesar la petición',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function actualizar(Request $request)
+    {
+        try {
+            $id = $this->validar($request);
+            $usuario = Usuario::find($id);
+
+            if ($usuario) {
+                if ($request->input('contra')) {
+                    $usuario->contra = md5($request->input('contra'));
                 }
                 $usuario->save();
                 return response()->json([
@@ -65,10 +89,10 @@ class UsuarioControlador extends Controller{
         }
     }
 
-    public function recuperarContra(Request $request) {
-        try{       
-            $usuario = Usuario::Where('correo',$request->correo)->first();
-            // return $usuario;
+    public function recuperarContra(Request $request)
+    {
+        try {
+            $usuario = Usuario::Where('correo', $request->correo)->first();
             $contra = ($request->input('contra'));
             if ($usuario) {
                 $usuario->contra = md5($contra);
@@ -83,17 +107,18 @@ class UsuarioControlador extends Controller{
             ], 500);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Hubo un error al procesar la petición', 
+                'message' => 'Hubo un error al procesar la petición',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function validar($request){
+    public function validar($request)
+    {
         if (!$request->header('Authorization')) {
             return response()->json([
-                'error' =>'Usted no cuenta con los permisos necesarios'
-            ],401);
+                'error' => 'Usted no cuenta con los permisos necesarios'
+            ], 401);
         }
 
         $array_token = explode(' ', $request->header('Authorization'));
@@ -105,31 +130,39 @@ class UsuarioControlador extends Controller{
         } catch (ExpiredException $e) {
             return response()->json([
                 'error' => 'La sesión expiro'
-            ], 400);        
+            ], 400);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Algo salio mal']
-            , 400);        
-        }        
+            return response()->json(
+                [
+                    'error' => 'Algo salio mal'
+                ],
+                400
+            );
+        }
     }
 
-    public function vista_login(){        
+    public function vista_login()
+    {
         return view('login');
     }
-    
-    public function vista_recuperar_pass(){
+
+    public function vista_recuperar_pass()
+    {
         return view('recuperar_pass');
     }
-    
-    public function vista_register(){
+
+    public function vista_register()
+    {
         return view('register');
     }
-    
-    public function vista_home(){
+
+    public function vista_home()
+    {
         return view('home');
     }
-    
-    public function vista_cambiar_pass(){
+
+    public function vista_cambiar_pass()
+    {
         return view('cambiar_pass');
     }
 }

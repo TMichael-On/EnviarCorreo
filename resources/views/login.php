@@ -34,6 +34,13 @@
       .content {
         flex: 1;
         }
+      .label {
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline; 
+        }   
       footer {
         background-color: #343a40;
         color: #ffffff;
@@ -76,6 +83,11 @@
               Iniciar sesión
             </button>
           </div>
+          
+  <div class="container">
+    <label for="registro" class="label" onclick="goToRegister()">Registrar</label>
+    <label for="recuperar" class="label" onclick="goToRecovery()">Recuperar contraseña</label>
+  </div>
         </form>
         <div id="message" class="mt-3"></div>
       </div>
@@ -150,5 +162,15 @@
             .catch((error) => console.error("Error:", error));
         });
     </script>
+    
+  <script>
+    function goToRegister() {
+      window.location.href = "/register";
+    }
+
+    function goToRecovery() {
+      window.location.href = "/recuperar-pass";
+    }
+  </script>
   </body>
 </html>
