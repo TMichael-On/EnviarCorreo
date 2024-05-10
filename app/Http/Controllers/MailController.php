@@ -34,7 +34,7 @@ class MailController extends Controller
             $mail->msgHTML($htmlContent);
             // Envío del correo
             $mail->send();            
-            return response()->json(['message' => 'Correo enviado correctamente']);
+            return response()->json(['success' => 'Correo enviado correctamente']);
         } catch (Exception $e) {            
             return response()->json(['error' => 'Error al enviar el correo: ' . $mail->ErrorInfo], 500);
         }

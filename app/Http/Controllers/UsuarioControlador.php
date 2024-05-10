@@ -32,13 +32,14 @@ class UsuarioControlador extends Controller
     {
         try {
             // Validar la solicitud utilizando las reglas de validación de Laravel
-            $request->validate([
-                'correo' => 'required|email|unique:usuarios,correo',
+            $rules =[
+                'correo' => 'required|unique:tbl_user,correo',
                 'nombres' => 'required',
                 'apellidos' => 'required',
-                'contra' => 'required|min:6|max:20',
-                'urlGmail' => 'required|url',
-            ]);
+                'contra' => 'required',
+                'urlGmail' => 'required',
+            ];
+            $this->validate($request, $rules);
 
             // Obtener los datos de la solicitud
             $data = $request->all();
@@ -55,16 +56,21 @@ class UsuarioControlador extends Controller
             $usuario->save();
 
             // Retornar una respuesta de éxito
-            return "success";
+            return response()->json([
+                'success' => "Registro exitoso."
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Manejo de errores de validación
+            return response()->json([
+                'error_validation' => $e->validator->errors()->first()
+            ]);
         } catch (\Exception $e) {
             // Capturar y manejar cualquier excepción
             return response()->json([
-                'message' => 'Hubo un error al procesar la petición',
-                'error' => $e->getMessage()
+                'error' => 'Hubo un error al procesar la petición'
             ], 500);
         }
     }
-
 
     public function actualizar(Request $request)
     {
@@ -103,12 +109,11 @@ class UsuarioControlador extends Controller
                 return $resultado;
             }
             return response()->json([
-                'error' => 'dont_existing_email',
-            ], 500);
+                'dont_existing_email' => 'Correo no encontrado',
+            ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Hubo un error al procesar la petición',
-                'error' => $e->getMessage()
+                'error' => 'Hubo un error al procesar la petición',
             ], 500);
         }
     }

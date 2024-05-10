@@ -143,8 +143,7 @@
         const pass1 = document.getElementById("inputPass1").value;
         const pass2 = document.getElementById("inputPass2").value;
         // Eliminado: const telefono = document.getElementById("inputTelefono").value;
-        const urlGmail = document.getElementById("inputUrlGmail").value;
-
+        const urlGmail = document.getElementById("inputUrlGmail").value;        
         // Verificar si las contraseñas coinciden
         if (pass1 !== pass2) {
           document.getElementById("errorMessage").style.display = "block";
@@ -167,16 +166,21 @@
             body: JSON.stringify(datos)
           };
           fetch(ruta, opciones)
-            .then((response) => response.text())
-            .then((data) => {
-              if (data === "existing_email") {
-                alert("Correo ya existente.");
-              } else if (data === "success") {
-                alert("Registro exitoso.");
-                login(); // Llamar a la función login directamente aquí
-              } else {
-                alert(data);
-              }
+            .then(response => {
+              if (response.ok) {
+                response.json().then(data => {                  
+                  if (data.error_validation) {
+                    alert("Correo ya existente.");
+                  } else if (data.success) {
+                    alert("Registro exitoso.");
+                    login(); // Llamar a la función login directamente aquí
+                  }
+                })
+              } else{
+                alert(
+                  "Ocurrió un error al cambiar la contraseña. Por favor, inténtalo de nuevo."
+                );
+              } 
             })
             .catch((error) => {
               console.error("Error:", error);
@@ -188,7 +192,7 @@
   </script>
   <script>
     function redireccionar1() {
-      var url = "https://tu-url1-aqui.com";
+      var url = "/documentos/urlGmail.pdf";
       window.open(url, "_blank");
     }
   </script>

@@ -9,6 +9,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
     <style>
       .login-container {
         max-width: 400px;
@@ -40,8 +41,10 @@
   <body>
     <div class="content container">
       <div class="login-container">
-        <div class="login-logo">
-          <img src="public\svg\logo-1.svg" alt="Logo" />
+        <div class="register-logo">
+          <a href="/login">
+            <img src="public\image\logo-1.png" alt="Logo" />
+          </a>
         </div>
         <h2 class="text-center mb-4">Recuperar contraseña</h2>
         <form id="loginForm">
@@ -94,29 +97,31 @@
 
           for (let i = 0; i < length; i++) {
             result += characters.charAt(array[i] % characters.length);
-          }
+          }          
           const formData = new FormData();
-          formData.append("inputEmail", correo);
-          formData.append("inputPass1", result);
-          fetch("http://localhost/proyecto/php/cambiar-contra.php", {
+          formData.append("correo", correo);
+          formData.append("contra", result);
+          fetch("/recuperarContra", {
             method: "POST",
             body: formData,
           })
-            .then((response) => response.text())
-            .then((data) => {
-              if (data === "dont_existing_email") {
-                alert("Correo no existente.");
-              } else if (data === "success") {
-                enviarCorreo(correo, result);
-                alert("Cambio exitoso, revise su correo.");
-                setTimeout(function () {
-                  window.location.href = "/proyecto/html/login.html";
-                }, 1000);
-              } else {
+            .then(response => {
+              if (response.ok) {
+                response.json().then(data => {                  
+                  if (data.dont_existing_email) {
+                    alert("Correo no existente.");
+                  } else if (data.success) {
+                    alert("Cambio exitoso, revise su correo.");
+                    setTimeout(function () {
+                      window.location.href = "/login";
+                    }, 1000);
+                  }
+                })
+              } else{
                 alert(
                   "Ocurrió un error al cambiar la contraseña. Por favor, inténtalo de nuevo."
                 );
-              }
+              }              
             })
             .catch((error) => {
               console.error("Error:", error);
@@ -124,19 +129,6 @@
             });
         });
 
-      function enviarCorreo(emailDestinatario, nuevaContrasena) {
-        const formData = new FormData();
-        formData.append("email", emailDestinatario);
-        formData.append("password", nuevaContrasena);
-
-        fetch("http://localhost/proyecto/php/enviar-contra.php", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.text())
-          .then((data) => console.log(data))
-          .catch((error) => console.error("Error al enviar correo:", error));
-      }
     </script>
   </body>
 </html>
