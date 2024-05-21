@@ -8,6 +8,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\ExpiredException;
 use App\Http\Controllers\MailController;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioControlador extends Controller
 {
@@ -118,7 +119,7 @@ class UsuarioControlador extends Controller
         }
     }
 
-    public function validar($request)
+    public function validar(Request $request)
     {
         if (!$request->header('Authorization')) {
             return response()->json([
@@ -143,6 +144,65 @@ class UsuarioControlador extends Controller
                 ],
                 400
             );
+        }
+    }
+    
+    public function filtrarAnio (Request $request)
+    {
+        if (!$request->header('Authorization')) {
+            return response()->json([
+                'error' =>'Usted no cuenta con los permisos necesarios'
+            ],401);
+        }
+        $id = $this->validar($request);
+        
+        try{
+            $results = DB::select('CALL asignadoAnio(?)', 
+            [$id]);               
+            return $results;
+        } catch (Exception $e) {
+           return response()->json([
+                'error' =>'Problema con el servidor'
+            ],500);
+        }
+    }
+    
+    public function filtrarMes(Request $request)
+    {
+        if (!$request->header('Authorization')) {
+            return response()->json([
+                'error' =>'Usted no cuenta con los permisos necesarios'
+            ],401);
+        }
+        $id = $this->validar($request);
+        
+        try{
+            $results = DB::select('CALL asignadoMes(?,?)', 
+            [$id,$request->anio]);               
+            return $results;
+        } catch (Exception $e) {
+           return response()->json([
+                'error' =>'Problema con el servidor'
+            ],500);
+        }
+    }
+    
+    public function reporteMes(Request $request)
+    {
+        if (!$request->header('Authorization')) {
+            return response()->json([
+                'error' =>'Usted no cuenta con los permisos necesarios'
+            ],401);
+        }
+        $id = $this->validar($request);
+        try{
+            $results = DB::select('CALL reporteMes(?,?,?)', 
+            [$id,$request->mes,$request->anio]);              
+            return response()->json($results);
+        } catch (Exception $e) {
+           return response()->json([
+                'error' =>'Problema con el servidor'
+            ],500);
         }
     }
 
